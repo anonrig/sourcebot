@@ -13,7 +13,7 @@ Example:
 
 ```javascript
 let SlackCore = require('sourcebot');
-let SlackBot = new Slack({
+let SlackBot = new SlackCore({
   token: 'xoxb-17065016470-0O9T0P9zSuMVEG8yM6QTGAIB'
 });
 
