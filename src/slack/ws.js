@@ -55,7 +55,7 @@ class SlackWebSocket {
       if (typeof message == 'string' && (response.text).match(new RegExp('.*\\b' + message + '\\b.*', 'i'))) {
         //Searches for the word inside the string/sentence.
         callback(response);
-      } else if (typeof message != 'string' && message.test(response.text)) {
+      } else if (message instanceof RegExp && message.test(response.text)) {
         callback(response);
       }
     })
