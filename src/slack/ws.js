@@ -116,12 +116,16 @@ class SlackWebSocket {
    * @returns {Promise}
    */
   disconnect() {
+    let that = this;
+
     return new Promise((resolve, reject) => {
       this.websocket.close((err) => {
         if (err) {
           debug('Connection close failed due to', err.message);
           return reject(err);
         }
+
+        that.eventEmitter.removeAllListeners();
 
         debug('Connection closed.');
         resolve();
