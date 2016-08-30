@@ -50,7 +50,12 @@ class SlackWebSocket {
     debug('Listening for message ' + message);
 
     this.eventEmitter.on('message', (response) => {
-      if ((new RegExp(response.text, 'i')).test(message)) {
+      debug('Message received: ', response);
+
+      if (typeof message == 'string' && (response.text).match(new RegExp('.*\\b' + message + '\\b.*', 'i'))) {
+        //Searches for the word inside the string/sentence.
+        callback(response);
+      } else if (typeof message != 'string' && message.test(response.text)) {
         callback(response);
       }
     })
