@@ -28,7 +28,7 @@ class SlackWebSocket {
   listen(message, callback) {
     if (!message) return reject(new Error('Message is missing to listen.'));
 
-    debug('Listening for message ' + message)
+    debug('Listening for message ' + message);
 
     this.websocket.on('message', (raw) => {
       let response = JSON.parse(raw);
@@ -61,7 +61,7 @@ class SlackWebSocket {
 
         that.messageCount += 1;
 
-        debug('Send message successful')
+        debug('Send message successful');
         resolve();
       });
     })
@@ -88,6 +88,22 @@ class SlackWebSocket {
 
     return new Promise((resolve, reject) => {
       this.websocket.on('open', (response) => {
+        resolve();
+      });
+    });
+  }
+
+
+  /**
+   * Disconnects from server.
+   *
+   * @returns {Promise}
+   */
+  disconnect() {
+    return new Promise((resolve, reject) => {
+      this.websocket.close((err) => {
+        if (err) return reject(err);
+
         resolve();
       });
     });
