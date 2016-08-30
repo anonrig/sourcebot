@@ -35,8 +35,7 @@ class SlackWebSocket {
     this.websocket.on('message', (raw) => {
       let response = JSON.parse(raw);
 
-      if (response.type == 'message') {
-        that.eventEmitter.emit('message', response);
+      that.eventEmitter.emit(response.type, response);
       }
     });
   }
