@@ -1,13 +1,27 @@
 {
   "name": "sourcebot",
   "version": "0.1.1",
-  "description": "",
+  "description": "SourceBot is a platform independent chat bot platform.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sourcebot/sourcebot.git"
+  },
+  "keywords": [
+    "chatbots",
+    "slack",
+    "skype",
+    "facebook messenger",
+    "bot"
+  ],
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sourcebot/sourcebot/issues"
+  },
+  "homepage": "https://github.com/sourcebot/sourcebot#readme",
   "dependencies": {
     "bluebird": "^3.4.4",
     "debug": "^2.2.0",
