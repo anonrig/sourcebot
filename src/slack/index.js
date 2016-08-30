@@ -2,6 +2,7 @@
 
 const request = require('request-promise');
 const SlackWebSocket = require('./ws.js');
+const Promise = require('bluebird');
 const debug = require('debug')('slack:core');
 
 class SlackCore {

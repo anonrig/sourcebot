@@ -3,6 +3,7 @@
 const WebSocket = require('ws');
 const debug = require('debug')('slack:websocket');
 const EventEmitter = require('events');
+const Promise = require('bluebird');
 
 class SlackWebSocket {
   /**
