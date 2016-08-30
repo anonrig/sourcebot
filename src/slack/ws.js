@@ -2,6 +2,7 @@
 
 const WebSocket = require('ws');
 const debug = require('debug')('slack:websocket');
+const EventEmitter = require('events');
 
 class SlackWebSocket {
   /**
@@ -12,13 +13,32 @@ class SlackWebSocket {
 
     this.url = url;
     this.messageCount = 1;
+    this.eventEmitter = new EventEmitter();
 
     return this.connect()
       .then((response) => {
         debug('Established connection');
 
+        this.listenAllEvents_();
+
         return new Promise(resolve => resolve(this));
       });
+  }
+
+
+  /**
+   * @private
+   */
+  listenAllEvents_() {
+    let that = this;
+
+    this.websocket.on('message', (raw) => {
+      let response = JSON.parse(raw);
+
+      if (response.type == 'message') {
+        that.eventEmitter.emit('message', response);
+      }
+    });
   }
 
 
@@ -30,10 +50,8 @@ class SlackWebSocket {
 
     debug('Listening for message ' + message);
 
-    this.websocket.on('message', (raw) => {
-      let response = JSON.parse(raw);
-
-      if (response.type == 'message' &&  response.text == message) {
+    this.eventEmitter.on('message', (response) => {
+      if (response.text == message) {
         callback(response);
       }
     })
