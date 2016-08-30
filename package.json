@@ -1,6 +1,6 @@
 {
   "name": "sourcebot",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "SourceBot is a platform independent chat bot platform.",
   "main": "index.js",
   "scripts": {
