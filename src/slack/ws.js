@@ -49,7 +49,7 @@ class SlackWebSocket {
     debug('Listening for message ' + message);
 
     this.eventEmitter.on('message', (response) => {
-      if (response.text == message) {
+      if ((new RegExp(response.text, 'i')).test(message)) {
         callback(response);
       }
     })
