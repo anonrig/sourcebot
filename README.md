@@ -24,6 +24,9 @@ In order to debug (Example):
 ```
 DEBUG=* node index.js
 ```
+* For Windows: Before running the app, run this command in order to debug: ```set Debug=slack:core,slack:websocket,slack:conversation```
+
+[![sourcebot_cmd.jpg](https://s14.postimg.org/o7rf82ki9/sourcebot_cmd.jpg)](https://postimg.org/image/bt4n7qszx/)
 
 Example:
 
@@ -47,6 +50,67 @@ SlackBot
   })
   .catch((err) => console.error(err.message))
 ```
+
+Example 2:
+
+```javascript
+let SlackCore = require('sourcebot');
+let SlackBot = new SlackCore({
+    token: 'xoxb-17065016470-0O9T0P9zSuMVEG8yM6QTGAIB'
+});
+
+
+SlackBot
+  .connect()
+  .then((bot) => {
+    bot
+      .listen(new RegExp('start convo', 'i'), (response) => {
+
+        bot
+          .startConversation(response.user, response.channel)
+          .then((conversation) => {
+            return conversation
+              .ask('How are you?')
+              .then((reply) => {
+                return conversation
+                  .say('Good!')
+                  .then(() => {
+                    return conversation.ask('What are you doing now?')
+                  })
+                  .then((response) => {
+                    return conversation.askSerial(['What?', 'Where?', 'When?']);
+                  })
+              })
+          });
+      })
+  }).catch((err) => console.error(err.message));
+```
+Methods
+===
+#### SlackBot
+* ```constructor(opts)```
+   * Consturcts the SlackCore class with ```opts.token```
+* ```connect()```
+   * Connects to Slack Web API
+
+#### Bot
+* ```listen(message, callback)```
+  * Listens for the message. The message can be an instance of RegExp or a plain String. Returns promise containing the response.
+* ```send(opts)```
+  * Sends a message to specified channel, Takes ```opts``` object as a parameter containing text and channel fields. Returns empty promise.
+* ```startConversation(user, channel)```
+  * Starts a conversation with the specified user in a specified channel. Takes user's slack id and the id of the channel. Returns promise containing a ```conversation``` object.
+* ```disconnect()```
+  * Disconnects and removes all event listeners.
+
+#### Conversation
+* ```ask(question)```
+  * Sends the given String ```question``` and waits for a response. Returns promise containing the ```response```.
+* ```say(message)```
+  * Sends the given String ```message```. Returns empty promise.
+* ```askSerial(questions)```
+  * Behaves same as ```ask()``` but this method takes an array of Strings that are asked sequentially. Next questions is only asked if the answer is given to the one before.
+
 
 The MIT License
 ===
