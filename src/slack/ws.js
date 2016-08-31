@@ -4,6 +4,8 @@ const WebSocket = require('ws');
 const debug = require('debug')('slack:websocket');
 const EventEmitter = require('events');
 const Promise = require('bluebird');
+const _ = require('lodash');
+const Conversation = require('./conversation');
 
 class SlackWebSocket {
   /**
@@ -15,6 +17,7 @@ class SlackWebSocket {
     this.url = url;
     this.messageCount = 1;
     this.eventEmitter = new EventEmitter();
+    this.conversations = [];
 
     return this.connect()
       .then((response) => {
@@ -45,13 +48,14 @@ class SlackWebSocket {
    * Listens Slack's Real Time Messaging API for specific message.
    */
   listen(message, callback) {
-    if (!message) return reject(new Error('Message is missing to listen.'));
+    if (!message) return (new Error('Message is missing to listen.'));
 
     debug('Listening for message ' + message);
 
     this.eventEmitter.on('message', (response) => {
-      debug('Message received: ', response);
+      debug('Message received');
 
+      //Used 2 if-else if statement to increase readability.
       if (typeof message == 'string' && (response.text).match(new RegExp('.*\\b' + message + '\\b.*', 'i'))) {
         //Searches for the word inside the string/sentence.
         callback(response);
@@ -137,6 +141,23 @@ class SlackWebSocket {
         resolve();
       });
     });
+  }
+
+
+  startConversation(user, channel) {
+    const conversationExist = _.findIndex(this.conversations, (item) => {
+      return item.user == user && item.channel == channel;
+    });
+
+    if (conversationExist != -1) return Promise.reject(new Error('Conversation exist'));
+
+    this.conversations.push({
+      user: user,
+      channel: channel,
+      conversation: new Conversation(this.websocket, user, channel)
+    });
+
+    return Promise.resolve(_.last(this.conversations).conversation);
   }
 }
 
