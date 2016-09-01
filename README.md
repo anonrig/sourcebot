@@ -34,7 +34,7 @@ Examples
 ### Typical 'hello world':
 
 ```javascript
-let SlackCore = require('sourcebot');
+let SlackCore = require('sourcebot').Slack;
 let SlackBot = new SlackCore({
   token: 'xoxb-17065016470-0O9T0P9zSuMVEG8yM6QTGAIB'
 });
@@ -57,7 +57,7 @@ SlackBot
 ### An example conversation:
 
 ```javascript
-let SlackCore = require('sourcebot');
+let SlackCore = require('sourcebot').Slack;
 let SlackBot = new SlackCore({
     token: 'xoxb-17065016470-0O9T0P9zSuMVEG8yM6QTGAIB'
 });
