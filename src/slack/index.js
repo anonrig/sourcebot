@@ -1,6 +1,6 @@
 'use strict';
 
-const request = require('request-promise');
+const Request = require('./request');
 const SlackWebSocket = require('./ws.js');
 const Promise = require('bluebird');
 const debug = require('debug')('slack:core');
@@ -11,7 +11,7 @@ class SlackCore {
    */
   constructor(opts) {
     debug('Initialize');
-    this.domain = 'https://slack.com/api/';
+    this.request = new Request(opts && opts.token);
     this.token = opts && opts.token;
   }
 
@@ -29,14 +29,8 @@ class SlackCore {
 
     debug('Connect request sent');
 
-    return request({
-        method: 'POST',
-        uri: url,
-        form: {
-          token: this.token
-        },
-        json: true
-      })
+    return this
+      .request.rtmStart()
       .then((response) => {
         if (!response.ok) {
           debug('Connect request failed due to', response.error.message);
@@ -45,6 +39,15 @@ class SlackCore {
 
         return new SlackWebSocket(response.url);
       })
+  }
+
+  /**
+   * Returns Request object to query Slack's API.
+   *
+   * @returns {Request}
+   */
+  requestSlack() {
+    return this.request;
   }
 }
 
