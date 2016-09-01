@@ -10,7 +10,10 @@ class SlackCore {
    * @constructor
    */
   constructor(opts) {
+    if (opts.debug) process.env.DEBUG = 'slack:*';
+
     debug('Initialize');
+    
     this.request = new Request(opts && opts.token);
     this.token = opts && opts.token;
   }

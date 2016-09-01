@@ -148,6 +148,7 @@ Methods
 #### SlackBot
 * ```constructor(opts)```
    * Constructs the SlackCore class with ```opts.token```
+   * If ```opts.debug``` is defined, SlackBot will enter in debug mode.
 * ```connect()```
    * Connects to Slack Web API
 * ```requestSlack()```
