@@ -57,12 +57,6 @@ SlackBot
 ### An example conversation:
 
 ```javascript
-let SlackCore = require('sourcebot').Slack;
-let SlackBot = new SlackCore({
-    token: 'xoxb-17065016470-0O9T0P9zSuMVEG8yM6QTGAIB'
-});
-
-
 SlackBot
   .connect()
   .then((bot) => {
@@ -87,6 +81,29 @@ SlackBot
           });
       })
   }).catch((err) => console.error(err.message));
+```
+
+### An example private conversation
+
+
+```javascript
+SlackBot
+  .connect()
+  .then((bot) => {
+    bot
+      .listen(new RegExp('start convo', 'i'), (response) => {
+        bot
+          .startPrivateConversation(response.user)
+          .then((conversation) => {
+            conversation
+              .ask('Hello world')
+              .then((response) => {
+                conversation.say('You said ' + response.text);
+              })
+          })
+      })
+  }).catch((err) => console.error(err.message));
+
 ```
 
 ### Query Slack's API
@@ -138,6 +155,7 @@ Methods
         * ```rtmStart()```
         * ```getChannelInfo(channelId)```
         * ```getUserInfo(userId)```
+        * ```openDirectMessageChannel(userId)```
 #### Bot
 * ```listen(message, callback)```
   * Listens for the message. The message can be an instance of RegExp or a plain String. Returns promise containing the response.
@@ -145,6 +163,8 @@ Methods
   * Sends a message to specified channel, Takes ```opts``` object as a parameter containing text and channel fields. Returns empty promise.
 * ```startConversation(user, channel)```
   * Starts a conversation with the specified user in a specified channel. Takes user's slack id and the id of the channel. Returns promise containing a ```conversation``` object.
+* ```startPrivateConversation(user)```
+  * Starts private conversation between a user. Returns promise containing a ```conversation``` object.
 * ```disconnect()```
   * Disconnects and removes all event listeners.
 
