@@ -10,7 +10,7 @@ SourceBot
 SourceBot is a platform independent chat bot framework. It aims to connect Facebook Messenger, Slack and Skype with the same code.
 
 Benefits of SourceKit:
-- Uses EcmaScript 6 Class architecture.
+- Uses EcmaScript 6 class architecture.
 - Easily debuggable.
 - Uses Promises, catches uncaught exceptions on the way.
 
@@ -28,7 +28,10 @@ DEBUG=* node index.js
 
 [![sourcebot_cmd.jpg](https://s14.postimg.org/o7rf82ki9/sourcebot_cmd.jpg)](https://postimg.org/image/bt4n7qszx/)
 
-Example:
+Examples
+==
+
+### Typical 'hello world':
 
 ```javascript
 let SlackCore = require('sourcebot');
@@ -51,7 +54,7 @@ SlackBot
   .catch((err) => console.error(err.message))
 ```
 
-Example 2:
+### An example conversation:
 
 ```javascript
 let SlackCore = require('sourcebot');
@@ -85,14 +88,56 @@ SlackBot
       })
   }).catch((err) => console.error(err.message));
 ```
+
+### Query Slack's API
+
+```javascript
+SlackBot
+  .connect()
+  .then((bot) => {
+    bot
+      .listen(new RegExp('start convo', 'i'), (response) => {
+
+        SlackBot
+          .requestSlack()
+          .getChannelInfo(response.channel)
+          .then((channelInfo) => {
+            bot.send({
+              channel: response.channel,
+              text: 'Wow, wow, wow! We have ' + channelInfo.channel.members.length + ' users in here!'
+            });
+
+            const tasks = channelInfo.channel.members.map((member) => {
+              return SlackBot.requestSlack().getUserInfo(member)
+            });
+
+            Promise
+              .all(tasks)
+              .then((users) => {
+                users.forEach((item) => {
+                  bot.send({
+                    channel: response.channel,
+                    text: 'Welcome <@' + item.user.id +'|' + item.user.name +'>, I\'ve missed you!'
+                  });
+                })
+              })
+          })
+      })
+  }).catch((err) => console.error(err.message));
+```
+
 Methods
 ===
 #### SlackBot
 * ```constructor(opts)```
-   * Consturcts the SlackCore class with ```opts.token```
+   * Constructs the SlackCore class with ```opts.token```
 * ```connect()```
    * Connects to Slack Web API
-
+* ```requestSlack()```
+   * Returns Slack API endpoint.
+        * ```rtmStart()```
+        * ```getChannelInfo(channelId)```
+        * ```getUserInfo(userId)```
 #### Bot
 * ```listen(message, callback)```
   * Listens for the message. The message can be an instance of RegExp or a plain String. Returns promise containing the response.
