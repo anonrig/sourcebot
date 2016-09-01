@@ -156,6 +156,7 @@ Methods
         * ```getChannelInfo(channelId)```
         * ```getUserInfo(userId)```
         * ```openDirectMessageChannel(userId)```
+
 #### Bot
 * ```listen(message, callback)```
   * Listens for the message. The message can be an instance of RegExp or a plain String. Returns promise containing the response.
