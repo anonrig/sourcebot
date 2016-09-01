@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased] -
 ### Added
 - Added Slack's API interface to communicate with Slack.
+- Added the ability to have Private Conversations.
 
 ## [0.2.0] - 2016-09-01
 ### Added

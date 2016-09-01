@@ -22,6 +22,7 @@ class SlackCore {
    * @returns {Promise}
    */
   connect() {
+    let that = this;
     const url = this.domain + 'rtm.start';
 
     if (!this.token)
@@ -37,7 +38,7 @@ class SlackCore {
           throw new Error(response.error.message)
         }
 
-        return new SlackWebSocket(response.url);
+        return new SlackWebSocket(response.url, that.request);
       })
   }
 

@@ -11,9 +11,10 @@ class SlackWebSocket {
   /**
    * @constructor
    */
-  constructor(url) {
+  constructor(url, request) {
     debug('Initialize');
 
+    this.request = request;
     this.url = url;
     this.messageCount = 1;
     this.eventEmitter = new EventEmitter();
@@ -144,6 +145,11 @@ class SlackWebSocket {
   }
 
 
+  /**
+   * Starts a conversation, if not-exist.
+   *
+   * @returns {Promise}
+   */
   startConversation(user, channel) {
     const conversationExist = _.findIndex(this.conversations, (item) => {
       return item.user == user && item.channel == channel;
@@ -158,6 +164,24 @@ class SlackWebSocket {
     });
 
     return Promise.resolve(_.last(this.conversations).conversation);
+  }
+
+
+  /**
+   * Creates a private conversation between a user.
+   *
+   * @returns {Promise}
+   */
+  startPrivateConversation(user) {
+    return this.request
+      .openDirectMessageChannel(user)
+      .then((response) => {
+        if (!response.ok) return Promise.reject(new Error('Failed to create a private conversation.'));
+
+        const channel = response.channel.id;
+
+        return this.startConversation(user, channel);
+      });
   }
 }
 
