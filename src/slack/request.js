@@ -70,6 +70,20 @@ class Request {
       uri: this.apiUrl + '/rtm.start'
     });
   }
+
+
+  /**
+   * Post a message to a channel, even DM.
+   */
+  openDirectMessageChannel(user) {
+    return this.request_({
+      method: 'POST',
+      uri: this.apiUrl + '/im.open',
+      form: {
+        user: user
+      }
+    });
+  }
 }
 
 module.exports = Request;
