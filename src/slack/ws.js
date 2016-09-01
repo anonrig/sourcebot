@@ -10,6 +10,9 @@ const Conversation = require('./conversation');
 class SlackWebSocket {
   /**
    * @constructor
+   *
+   * @params {String} url
+   * @params {Request} request class instance.
    */
   constructor(url, request) {
     debug('Initialize');
