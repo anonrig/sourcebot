@@ -72,21 +72,28 @@ class Conversation {
 
 
   /**
-   * Asks the question and waits for the answer
+   * Asks the question and waits for the answer.
+   * If format provided asks again until enforced replyPattern requirements met.
+   * TODO: Need to promisfy callback.
    * @returns {Promise}
    */
-  ask(question) {
+  ask(opts, cb) {
+    if(!opts || (opts && opts.replyPattern && !opts.replyPattern instanceof RegExp)) return Promise.reject(new Error('Provided params are not valid'));
+
     let that = this;
 
     debug('Ask question to the user.');
     return this
-      .say(question)
+      .say(opts.question)
       .then(() => {
         return new Promise((resolve) => {
           debug('Wait for a response.');
           that.eventEmitter.once('message', (response) => {
             debug('Response received');
-            resolve(response);
+            if (!opts.repeat || opts.replyPattern.test(response.text))
+              return resolve(response);
+            else
+              return (cb && cb instanceof Function) ? cb(response).then( () => resolve(that.ask(opts, cb)) ) : resolve(that.ask(opts, cb));
           });
         })
       });
