@@ -78,6 +78,7 @@ class Conversation {
    * @param {(string|Object)} opts - String, or object.
    * @param {string=} opts.text - Question.
    * @param {RegExp=} opts.replyPattern - Reply pattern as an instance of RegExp.
+   * @param {(function|Promise)} cb - Callback. Has parameter `response`.
    *
    * @returns {Promise}
    */
