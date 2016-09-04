@@ -74,17 +74,35 @@ class Conversation {
   /**
    * Asks the question and waits for the answer.
    * If format provided asks again until enforced replyPattern requirements met.
-   * TODO: Need to promisfy callback.
+   *
+   * @param {(string|Object)} opts - String, or object.
+   * @param {string=} opts.text - Question.
+   * @param {RegExp=} opts.replyPattern - Reply pattern as an instance of RegExp.
+   *
    * @returns {Promise}
    */
   ask(opts, cb) {
-    if(!opts || (opts && opts.replyPattern && !opts.replyPattern instanceof RegExp)) return Promise.reject(new Error('Provided params are not valid'));
+    if (!opts) return Promise.reject(new Error('Unknown question object/string.'));
+
+    /**
+     * Opts can be an object or a string.
+     */
+    if (typeof(opts) == 'string') {
+      opts = {
+        text: opts
+      };
+    }
+
+    /**
+     * Add a reply pattern to check if the response fits your needs.
+     */
+    if(opts.replyPattern && !(opts.replyPattern instanceof RegExp)) return Promise.reject(new Error('replyPattern is not valid. It should be an instance of RegExp.'));
 
     let that = this;
 
     debug('Ask question to the user.');
     return this
-      .say(opts.question)
+      .say(opts.text)
       .then(() => {
         return new Promise((resolve) => {
           debug('Wait for a response.');
@@ -92,8 +110,20 @@ class Conversation {
             debug('Response received');
             if (!opts.repeat || opts.replyPattern.test(response.text))
               return resolve(response);
-            else
-              return (cb && cb instanceof Function) ? cb(response).then( () => resolve(that.ask(opts, cb)) ) : resolve(that.ask(opts, cb));
+
+            if (cb) {
+              /**
+               * Check if callback is promisified. If it's promisified, wait for it.
+               */
+              if (typeof cb.then == 'function')
+                return cb(response).then(() => {
+                  return resolve(that.ask(opts, cb));
+                });
+
+              cb();
+            }
+
+            resolve(that.ask(opts));
           });
         })
       });

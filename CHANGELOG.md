@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Added the ability to have Private Conversations.
 - Added debug option to SlackBot constructor to enable debug mode.
 
+### Changed
+- ```conversation.ask``` now supports replyPattern, and callback for failure cases. For more information, follow README.
+
 ## [0.2.0] - 2016-09-01
 ### Added
 - Added Conversation methods.
