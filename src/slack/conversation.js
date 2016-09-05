@@ -121,10 +121,10 @@ class Conversation {
                   return resolve(that.ask(opts, cb));
                 });
 
-              cb();
+              cb(response);
             }
 
-            resolve(that.ask(opts));
+            resolve(that.ask(opts, cb));
           });
         })
       });
