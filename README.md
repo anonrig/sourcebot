@@ -215,15 +215,15 @@ Methods
   * Sends the given String ```message```. Returns empty promise.
 * ```askSerial(opts)```
   * Behaves same as ```ask()``` but this method takes an array of objects that are asked sequentially.
-    ```javascript
-      let opts = {
-        text: 'Question',
-        replyPattern: new RegExp(''),
-        callback: (faultyReply) => {
-          return Promise.resolve()
-        }
-    }
-    ```
+```javascript
+let opts = {
+   text: 'Question',
+   replyPattern: new RegExp(''),
+   callback: (faultyReply) => {
+     return Promise.resolve()
+   }
+ }
+```
 
 
 The MIT License
