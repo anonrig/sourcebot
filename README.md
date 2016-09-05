@@ -143,6 +143,43 @@ SlackBot
   }).catch((err) => console.error(err.message));
 ```
 
+#### Ask series of questions
+
+
+
+```javascript
+SlackBot
+  .connect()
+  .then((bot) => {
+    bot
+      .listen(new RegExp('start convo', 'i'), (response) => {
+
+        bot
+          .startConversation(response.user, response.channel)
+          .then((conversation) => {
+            return conversation
+              .askSerial([
+                {
+                  text: 'How are you?',
+                  replyPattern: new RegExp('\\bfine\\b', 'i') //Asks until the given response contains 'fine'.
+                },
+                {
+                  text: 'Where are you?',
+                  replyPattern: new RegExp('\\bistanbul\\b', 'i'),
+                  callback: (faultyReply) => { //Fires up if the response does not contain 'istanbul'.
+                    return conversation.say('Please indicate your city.');
+                  }
+                }
+              ]).then((responses) => {
+                console.log(responses);
+              });
+          });
+      })
+  }).catch((err) => console.error(err.message));
+```
+
+
+
 Methods
 ===
 #### SlackBot
@@ -171,12 +208,22 @@ Methods
   * Disconnects and removes all event listeners.
 
 #### Conversation
-* ```ask(question)```
-  * Sends the given String ```question``` and waits for a response. Returns promise containing the ```response```.
+* ```ask(opts||message, callback)```
+  * Sends the given ```opts``` Object or  ```question``` String and waits for a response. If ```opts.replyPattern``` is provided asks until the RegExp test succeeds, fires callback upon faulty replies with the ```faultyReply```. Returns a promise containing the ```response```.
+  * ```let opts = {text: 'Question', replyPattern: new RegExp('')}```
 * ```say(message)```
   * Sends the given String ```message```. Returns empty promise.
-* ```askSerial(questions)```
-  * Behaves same as ```ask()``` but this method takes an array of Strings that are asked sequentially. Next questions is only asked if the answer is given to the one before.
+* ```askSerial(opts)```
+  * Behaves same as ```ask()``` but this method takes an array of objects that are asked sequentially.
+```javascript
+let opts = {
+   text: 'Question',
+   replyPattern: new RegExp(''),
+   callback: (faultyReply) => {
+     return Promise.resolve()
+   }
+ }
+```
 
 
 The MIT License
