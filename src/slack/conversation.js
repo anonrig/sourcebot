@@ -134,10 +134,10 @@ class Conversation {
   /**
    * Asks an array of questions while waiting for the answer of each.
    *
-   * @param {Object[]} opts - Array of opt objects.
+   * @param {Object[]|string} opts - Array of opt objects.
    * @param {string} opts[].text - Question to be asked.
-   * @param {string} opts[].replyPattern - Reply pattern to be enforced.
-   * @param {Function} opts[].callback - Callback to call upon faulty replies.
+   * @param {string=} opts[].replyPattern - Reply pattern to be enforced.
+   * @param {Function=} opts[].callback - Callback to call upon faulty replies.
    *
    * @returns {Promise}
    */
