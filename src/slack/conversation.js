@@ -109,7 +109,7 @@ class Conversation {
           debug('Wait for a response.');
           that.eventEmitter.once('message', (response) => {
             debug('Response received');
-            if (!opts.repeat || opts.replyPattern.test(response.text))
+            if (opts.replyPattern && opts.replyPattern.test(response.text))
               return resolve(response);
 
             if (cb) {
@@ -133,12 +133,18 @@ class Conversation {
 
   /**
    * Asks an array of questions while waiting for the answer of each.
+   *
+   * @param {Object[]} opts - Array of opt objects.
+   * @param {string} opts[].text - Question to be asked.
+   * @param {string} opts[].replyPattern - Reply pattern to be enforced.
+   * @param {Function} opts[].callback - Callback to call upon faulty replies.
+   *
    * @returns {Promise}
    */
-  askSerial(questions) {
+  askSerial(opts) {
     let that = this;
-    return Promise.mapSeries(questions, (question) => {
-      return that.ask(question)
+    return Promise.mapSeries(opts, (opt) => {
+      return that.ask(opt, opt.callback || null)
         .then((response) => {
           return response;
         });
