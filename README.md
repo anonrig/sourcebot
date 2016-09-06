@@ -6,6 +6,7 @@ SourceBot
 [![npm](https://img.shields.io/npm/v/sourcebot.svg)](https://www.npmjs.com/package/sourcebot)
 [![David](https://img.shields.io/david/sourcebot/sourcebot.svg)](https://david-dm.org/sourcebot/sourcebot)
 [![npm](https://img.shields.io/npm/l/sourcebot.svg)](https://spdx.org/licenses/MIT)
+[![Code Climate](https://codeclimate.com/github/sourcebot/sourcebot/badges/gpa.svg)]
 
 SourceBot is a platform independent chat bot framework. It aims to connect Facebook Messenger, Slack and Skype with the same code.
 
