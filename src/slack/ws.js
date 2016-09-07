@@ -43,7 +43,6 @@ class SlackWebSocket {
     that.retriedCount = 0;
 
     this.websocket.on('message', (raw) => {
-      debug('Listening for incoming messages.');
       let response = JSON.parse(raw);
 
       if (response.type == 'reconnectUrl')
@@ -59,6 +58,7 @@ class SlackWebSocket {
     this.websocket.on('pong', (data, flags) => {
       this.eventEmitter.emit('pong', data, flags);
     });
+
     this.websocket.on('close', (err) => {
       debug('Connection lost initiating reconnect.');
       that.eventEmitter.emit('disconnect');
@@ -76,16 +76,12 @@ class SlackWebSocket {
 
 
   onDisconnect(cb) {
-    this.eventEmitter.on('disconnect', () => {
-      cb();
-    });
+    this.eventEmitter.on('disconnect', cb);
   }
 
 
   onReconnectFailed(cb) {
-    this.eventEmitter.on('reconnectFailed', () => {
-      cb();
-    })
+    this.eventEmitter.on('reconnectFailed', cb);
   }
 
 
