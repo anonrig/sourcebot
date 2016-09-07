@@ -52,6 +52,13 @@ class SlackWebSocket {
       that.eventEmitter.emit(response.type, response);
     });
 
+    this.websocket.on('ping', (data, flags) => {
+      this.eventEmitter.emit('ping', data, flags);
+    });
+
+    this.websocket.on('pong', (data, flags) => {
+      this.eventEmitter.emit('pong', data, flags);
+    });
     this.websocket.on('close', (err) => {
       debug('Connection lost initiating reconnect.');
       that.eventEmitter.emit('disconnect');
@@ -219,6 +226,48 @@ class SlackWebSocket {
 
         return this.startConversation(user, channel);
       });
+  }
+
+
+  /**
+   * Fires on incoming ping.
+   * @param {Function} callback
+   */
+  onPing(callback) {
+    let that = this;
+    this.eventEmitter.on('ping', (data, flags) => {
+      that.pong(data, flags);
+      callback(data, flags);
+    });
+  }
+
+
+  /**
+   * Fires on incoming pong
+   * @param {Function} callback
+   */
+  onPong(callback) {
+    this.eventEmitter.on('pong', callback);
+  }
+
+
+  /**
+   * Sends a ping. data is sent, options is an object with members mask and binary.
+   * @param data
+   * @param {Object} options
+   */
+  ping(data, options) {
+    this.websocket.ping(data || null, options || null);
+  }
+
+
+  /**
+   * Sends a pong. data is sent, options is an object with members; mask and binary.
+   * @param data
+   * @param {Object} options
+   */
+  pong(data, options) {
+    this.websocket.pong(data || null, options || null);
   }
 }
 
