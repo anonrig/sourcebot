@@ -14,7 +14,7 @@ class SlackWebSocket {
    * @params {String} url
    * @params {Request} request class instance.
    */
-  constructor(url, request) {
+  constructor(url, request, retryCount) {
     debug('Initialize');
 
     this.request = request;
@@ -22,9 +22,10 @@ class SlackWebSocket {
     this.messageCount = 1;
     this.eventEmitter = new EventEmitter();
     this.conversations = [];
+    this.retryCount = retryCount;
 
     return this.connect()
-      .then((response) => {
+      .then(() => {
         debug('Established connection');
 
         this.listenAllEvents_();
@@ -39,12 +40,45 @@ class SlackWebSocket {
    */
   listenAllEvents_() {
     let that = this;
+    that.retriedCount = 0;
 
     this.websocket.on('message', (raw) => {
+      debug('Listening for incoming messages.');
       let response = JSON.parse(raw);
+
+      if (response.type == 'reconnectUrl')
+        return that.url = response.url;
 
       that.eventEmitter.emit(response.type, response);
     });
+
+    this.websocket.on('close', (err) => {
+      debug('Connection lost initiating reconnect.');
+      that.eventEmitter.emit('disconnect');
+
+      if (that.retryCount > that.retriedCount) {
+        debug('Trying to reconnect.');
+        that.connect();
+        that.retriedCount += 1;
+      } else {
+        debug('Cannot reconnect after ', that.retriedCount, 'trials.');
+        that.eventEmitter.emit('reconnectFailed');
+      }
+    });
+  }
+
+
+  onDisconnect(cb) {
+    this.eventEmitter.on('disconnect', () => {
+      cb();
+    });
+  }
+
+
+  onReconnectFailed(cb) {
+    this.eventEmitter.on('reconnectFailed', () => {
+      cb();
+    })
   }
 
 
@@ -117,7 +151,7 @@ class SlackWebSocket {
     this.websocket = new WebSocket(this.url);
 
     return new Promise((resolve, reject) => {
-      this.websocket.on('open', (response) => {
+      this.websocket.on('open', () => {
         resolve();
       });
     });

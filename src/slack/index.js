@@ -16,6 +16,7 @@ class SlackCore {
     
     this.request = new Request(opts && opts.token);
     this.token = opts && opts.token;
+    this.retryCount = (opts && opts.retryCount) || 3;
   }
 
 
@@ -41,7 +42,7 @@ class SlackCore {
           throw new Error(response.error.message)
         }
 
-        return new SlackWebSocket(response.url, that.request);
+        return new SlackWebSocket(response.url, that.request, that.retryCount);
       })
   }
 
