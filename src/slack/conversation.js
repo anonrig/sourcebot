@@ -140,7 +140,7 @@ class Conversation {
               cb(response);
             }
 
-            resolve(that.ask(opts, cb));
+            resolve(response);
           });
         })
       });
