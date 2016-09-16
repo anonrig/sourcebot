@@ -67,7 +67,7 @@ class Conversation {
     };
 
     return new Promise((resolve, reject) => {
-      debug('Send message initialize');
+      debug('Send message initialize', opts.text);
       that.websocket.send(JSON.stringify(opts), (err) => {
         if (err) {
           debug('Send message failed due to', err.message);
@@ -122,7 +122,7 @@ class Conversation {
         return new Promise((resolve) => {
           debug('Wait for a response.');
           that.eventEmitter.once('message', (response) => {
-            debug('Response received');
+            debug('Response received', response.text);
             if (opts.replyPattern && opts.replyPattern.test(response.text)) {
               return resolve(response);
             }

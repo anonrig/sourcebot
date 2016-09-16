@@ -63,7 +63,7 @@ class SlackWebSocket {
     debug('Listening for message ' + message);
 
     this.eventEmitter.on('message', (response) => {
-      debug('Message received');
+      debug('Message received', response.text);
 
       //Used 2 if-else if statement to increase readability.
       if (typeof message == 'string' && (response.text).match(new RegExp('.*\\b' + message + '\\b.*', 'i'))) {
