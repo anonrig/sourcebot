@@ -10,8 +10,12 @@ class Conversation {
 
   /**
    * @Constructor
+   *
+   * @param {Object} websocket - Websocket instance.
+   * @param {String=} user - User id.
+   * @param {String} channel - Channel name.
    */
-  constructor (websocket, user, channel) {
+  constructor (websocket, channel, user) {
     debug('Initialize conversation.');
     this.websocket = websocket;
     this.eventEmitter = new EventEmitter();
@@ -38,12 +42,23 @@ class Conversation {
     this.websocket.on('message', (raw) => {
       let response = JSON.parse(raw);
 
-      if (response.user == that.user)
+      if (that.user) {
+        if (response.user == that.user)
+          that.eventEmitter.emit(response.type, response);
+      } else {
         that.eventEmitter.emit(response.type, response);
+      }
     });
   }
 
 
+  /**
+   * Say something to a channel.
+   *
+   * @param {String} message - Message to say.
+   *
+   * @returns {Promise}
+   */
   say (message) {
     let that = this;
 

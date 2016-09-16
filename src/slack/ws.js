@@ -11,8 +11,8 @@ class SlackWebSocket {
   /**
    * @constructor
    *
-   * @params {String} url
-   * @params {Request} request class instance.
+   * @param {String} url
+   * @param {Request} request class instance.
    */
   constructor(url, request) {
     debug('Initialize');
@@ -50,6 +50,9 @@ class SlackWebSocket {
 
   /**
    * Listens Slack's Real Time Messaging API for specific message.
+   *
+   * @param {String|RegExp} message - Message to listen to.
+   * @param {Function} callback - Callback function.
    */
   listen(message, callback) {
     if (!message) return (new Error('Message is missing to listen.'));
@@ -72,6 +75,8 @@ class SlackWebSocket {
 
   /**
    * Sends a message to specific channel.
+   *
+   * @param {Object} opts
    *
    * @returns {Promise}
    */
@@ -151,19 +156,22 @@ class SlackWebSocket {
   /**
    * Starts a conversation, if not-exist.
    *
+   * @param {String} channel - Channel name.
+   * @param {String=} user - User id.
+   *
    * @returns {Promise}
    */
-  startConversation(user, channel) {
+  startConversation(channel, user) {
     const conversationExist = _.findIndex(this.conversations, (item) => {
-      return item.user == user && item.channel == channel;
+      return item.user == (user || null) && item.channel == channel;
     });
 
     if (conversationExist != -1) return Promise.reject(new Error('Conversation exist'));
 
     this.conversations.push({
-      user: user,
+      user: user || null,
       channel: channel,
-      conversation: new Conversation(this.websocket, user, channel)
+      conversation: new Conversation(this.websocket, channel, user)
     });
 
     return Promise.resolve(_.last(this.conversations).conversation);
@@ -183,7 +191,7 @@ class SlackWebSocket {
 
         const channel = response.channel.id;
 
-        return this.startConversation(user, channel);
+        return this.startConversation(channel, user);
       });
   }
 }

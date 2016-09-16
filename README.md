@@ -202,7 +202,7 @@ Methods
   * Listens for the message. The message can be an instance of RegExp or a plain String. Returns promise containing the response.
 * ```send(opts)```
   * Sends a message to specified channel, Takes ```opts``` object as a parameter containing text and channel fields. Returns empty promise.
-* ```startConversation(user, channel)```
+* ```startConversation(channelName, userId)```
   * Starts a conversation with the specified user in a specified channel. Takes user's slack id and the id of the channel. Returns promise containing a ```conversation``` object.
 * ```startPrivateConversation(user)```
   * Starts private conversation between a user. Returns promise containing a ```conversation``` object.
