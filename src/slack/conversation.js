@@ -142,7 +142,6 @@ class Conversation {
    * @returns {Promise}
    */
   askSerial(opts) {
-    let that = this;
     return Promise.mapSeries(opts, (opt) => {
       return that.ask(opt, opt.callback || null)
         .then((response) => {
