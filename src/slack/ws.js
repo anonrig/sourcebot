@@ -17,6 +17,9 @@ class SlackWebSocket {
   constructor(url, request) {
     debug('Initialize');
 
+    if (!url) return Promise.reject(new Error('Missing url'));
+    if (!request) return Promise.reject(new Error('Missing request instance'));
+
     this.request = request;
     this.url = url;
     this.messageCount = 1;
@@ -24,12 +27,12 @@ class SlackWebSocket {
     this.conversations = [];
 
     return this.connect()
-      .then((response) => {
+      .then(() => {
         debug('Established connection');
 
         this.listenAllEvents_();
 
-        return new Promise(resolve => resolve(this));
+        return Promise.resolve(this);
       });
   }
 
@@ -123,7 +126,24 @@ class SlackWebSocket {
 
     return new Promise((resolve, reject) => {
       this.websocket.on('open', (response) => {
+        console.log('open', response)
         resolve();
+      });
+
+      this.websocket.on('close', (response) => {
+        console.log('close', response)
+      });
+
+      this.websocket.on('error', (response) => {
+        console.log('error', response)
+      });
+
+      this.websocket.on('connection', (response) => {
+        console.log('connection', response)
+      });
+
+      this.websocket.on('disconnect', (response) => {
+        console.log('disconnect', response)
       });
     });
   }
