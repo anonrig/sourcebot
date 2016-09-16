@@ -66,7 +66,7 @@ SlackBot
       .listen(new RegExp('start convo', 'i'), (response) => {
 
         bot
-          .startConversation(response.user, response.channel)
+          .startConversation(response.channel, response.user)
           .then((conversation) => {
             return conversation
               .ask('How are you?')
@@ -157,7 +157,7 @@ SlackBot
       .listen(new RegExp('start convo', 'i'), (response) => {
 
         bot
-          .startConversation(response.user, response.channel)
+          .startConversation(response.channel, response.User)
           .then((conversation) => {
             return conversation
               .askSerial([
