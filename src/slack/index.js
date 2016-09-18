@@ -10,7 +10,8 @@ class SlackCore {
    * @constructor
    */
   constructor(opts) {
-    if (!opts) return Promise.reject(new Error('Missing opts.'));
+    if (!opts)
+      throw new Error('Missing opts.');
     if (opts.debug) process.env.DEBUG = 'slack:*';
 
     debug('Initialize');

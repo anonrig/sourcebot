@@ -19,9 +19,11 @@ describe('Core', () => {
   });
 
   it('should throw error on missing opts', () => {
-    let core = new SlackCore();
+    const instance = () => {
+      let core = new SlackCore();
+    }
 
-    core.should.be.rejected;
+    instance.should.Throw(Error);
   })
 
   it('should throw error on missing token', () => {
