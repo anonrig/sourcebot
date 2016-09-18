@@ -14,13 +14,7 @@ const EventEmitter = require('events');
 const WSInstance = require('../../src/slack/ws');
 const Request = require('../../src/slack/request');
 
-let MockSocket = WSInstance;
-MockSocket.prototype.connect = () => {
-  return Promise.resolve(this);
-};
-MockSocket.prototype.listenAllEvents_ = () => {};
-
-describe('Websocket', () => {
+describe('Websocket Properties', () => {
   beforeEach(() => {
     this.request = new Request('https://slack.com/api/');
   });
@@ -36,12 +30,19 @@ describe('Websocket', () => {
 
     instance.should.be.rejected;
   });
+});
 
-  it('should call connect once', () => {
-    let instance = new MockSocket('ws://echo.websocket.org/', this.request);
+describe('Websocket Connection', () => {
+  beforeEach(() => {
+    this.request = new Request('https://slack.com/api/');
+    this.instance = new WSInstance('ws://echo.websocket.org/', this.request);
+  });
 
-    return instance.then((bot) => {
-      sinon.spy(bot);
-    })
+  it('should have a valid ws instance', () => {
+    return this.instance
+      .connect()
+      .then((bot) => {
+        bot.websocket.should.exist;
+      });
   });
 });
