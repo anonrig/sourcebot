@@ -3,10 +3,9 @@
 SourceBot
 ==
 
-[![npm](https://img.shields.io/npm/v/sourcebot.svg)](https://www.npmjs.com/package/sourcebot)
 [![David](https://img.shields.io/david/sourcebot/sourcebot.svg)](https://david-dm.org/sourcebot/sourcebot)
-[![npm](https://img.shields.io/npm/l/sourcebot.svg)](https://spdx.org/licenses/MIT)
 [![Code Climate](https://codeclimate.com/github/sourcebot/sourcebot/badges/gpa.svg)](https://codeclimate.com/github/sourcebot/sourcebot)
+[![Build Status](https://travis-ci.org/sourcebot/sourcebot.svg?branch=master)](https://travis-ci.org/sourcebot/sourcebot)
 [![Coverage Status](https://coveralls.io/repos/github/sourcebot/sourcebot/badge.svg)](https://coveralls.io/github/sourcebot/sourcebot)
 
 
