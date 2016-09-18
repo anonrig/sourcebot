@@ -111,4 +111,39 @@ describe('Websocket Properties', () => {
         bot.messageCount.should.not.equal(2);
       });
   });
+
+  it('should start conversation properly', () => {
+    return this.instance
+      .connect()
+      .then((bot) => {
+        bot.startConversation.should.exist;
+        bot.conversations.should.be.an.instanceof(Array);
+        bot.conversations.should.have.length(0);
+
+        return bot
+          .startConversation('CHANNEL', 'USER')
+          .then((conversation) => {
+            bot.conversations.should.have.length(1);
+
+            conversation.channel.should.equal(bot.conversations[bot.conversations.length - 1].channel);
+            conversation.user.should.equal(bot.conversations[bot.conversations.length - 1].user);
+          });
+      });
+  });
+
+  it('should not start conversation if it already exist', () => {
+    return this.instance
+      .connect()
+      .then((bot) => {
+        bot.conversations.should.have.length(0);
+
+        return bot
+          .startConversation('CHANNEL', 'USER')
+          .then((conversation) => {
+            bot.conversations.should.have.length(1);
+
+            return bot.startConversation('CHANNEL', 'USER').should.be.rejected;
+          });
+      });
+  })
 });
