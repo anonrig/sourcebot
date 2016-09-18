@@ -1,28 +1,30 @@
 'use strict';
 
-const request = require('request-promise');
 const Promise = require('bluebird');
 const EventEmitter = require('events');
 const debug = require('debug')('slack:conversation');
-const _ = require('lodash');
 
 class Conversation {
 
   /**
    * @Constructor
+   *
+   * @param {Object} websocket - Websocket instance.
+   * @param {String=} user - User id.
+   * @param {String} channel - Channel name.
    */
-  constructor (websocket, user, channel) {
+  constructor(websocket, channel, user) {
     debug('Initialize conversation.');
     this.websocket = websocket;
     this.eventEmitter = new EventEmitter();
     this.messageCount = 1;
     this.user = user;
     this.channel = channel;
-    this.listen_()
+    this.listen_();
   }
 
 
-  destroy () {
+  destroy() {
     this.eventEmitter.removeAllListeners();
   }
 
@@ -31,20 +33,32 @@ class Conversation {
    * @private
    * Listens the channel for user message.
    */
-  listen_ () {
-    let that = this;
+  listen_() {
+    const that = this;
 
     debug('Listening for user message.');
     this.websocket.on('message', (raw) => {
-      let response = JSON.parse(raw);
+      const response = JSON.parse(raw);
 
-      if (response.user == that.user)
+      if (that.user) {
+        if (response.user === that.user) {
+          that.eventEmitter.emit(response.type, response);
+        }
+      } else {
         that.eventEmitter.emit(response.type, response);
+      }
     });
   }
 
 
-  say (message) {
+  /**
+   * Say something to a channel.
+   *
+   * @param {String} message - Message to say.
+   *
+   * @returns {Promise}
+   */
+  say(message) {
     let that = this;
 
     const opts = {
@@ -55,7 +69,7 @@ class Conversation {
     };
 
     return new Promise((resolve, reject) => {
-      debug('Send message initialize');
+      debug('Send message initialize', opts.text);
       that.websocket.send(JSON.stringify(opts), (err) => {
         if (err) {
           debug('Send message failed due to', err.message);
@@ -67,7 +81,7 @@ class Conversation {
         debug('Send message successful');
         resolve();
       });
-    })
+    });
   }
 
 
@@ -97,7 +111,9 @@ class Conversation {
     /**
      * Add a reply pattern to check if the response fits your needs.
      */
-    if(opts.replyPattern && !(opts.replyPattern instanceof RegExp)) return Promise.reject(new Error('replyPattern is not valid. It should be an instance of RegExp.'));
+    if (opts.replyPattern && !(opts.replyPattern instanceof RegExp)) {
+      return Promise.reject(new Error('replyPattern is not valid. It should be an instance of RegExp.'));
+    }
 
     let that = this;
 
@@ -108,23 +124,25 @@ class Conversation {
         return new Promise((resolve) => {
           debug('Wait for a response.');
           that.eventEmitter.once('message', (response) => {
-            debug('Response received');
-            if (opts.replyPattern && opts.replyPattern.test(response.text))
+            debug('Response received', response.text);
+            if (opts.replyPattern && opts.replyPattern.test(response.text)) {
               return resolve(response);
+            }
 
             if (cb) {
               /**
                * Check if callback is promisified. If it's promisified, wait for it.
                */
-              if (typeof cb.then == 'function')
+              if (typeof cb.then === 'function') {
                 return cb(response).then(() => {
                   return resolve(that.ask(opts, cb));
                 });
+              }
 
               cb(response);
             }
 
-            resolve(that.ask(opts, cb));
+            resolve(response);
           });
         })
       });
@@ -142,7 +160,6 @@ class Conversation {
    * @returns {Promise}
    */
   askSerial(opts) {
-    let that = this;
     return Promise.mapSeries(opts, (opt) => {
       return that.ask(opt, opt.callback || null)
         .then((response) => {
@@ -150,7 +167,6 @@ class Conversation {
         });
     });
   }
-
 }
 
 module.exports = Conversation;

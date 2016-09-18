@@ -11,26 +11,20 @@ class SlackWebSocket {
   /**
    * @constructor
    *
-   * @params {String} url
-   * @params {Request} request class instance.
+   * @param {String} url
+   * @param {Request} request class instance.
    */
   constructor(url, request) {
     debug('Initialize');
+
+    if (!url) return Promise.reject(new Error('Missing url'));
+    if (!request) return Promise.reject(new Error('Missing request instance'));
 
     this.request = request;
     this.url = url;
     this.messageCount = 1;
     this.eventEmitter = new EventEmitter();
     this.conversations = [];
-
-    return this.connect()
-      .then((response) => {
-        debug('Established connection');
-
-        this.listenAllEvents_();
-
-        return new Promise(resolve => resolve(this));
-      });
   }
 
 
@@ -50,6 +44,9 @@ class SlackWebSocket {
 
   /**
    * Listens Slack's Real Time Messaging API for specific message.
+   *
+   * @param {String|RegExp} message - Message to listen to.
+   * @param {Function} callback - Callback function.
    */
   listen(message, callback) {
     if (!message) return (new Error('Message is missing to listen.'));
@@ -57,7 +54,7 @@ class SlackWebSocket {
     debug('Listening for message ' + message);
 
     this.eventEmitter.on('message', (response) => {
-      debug('Message received');
+      debug('Message received', response.text);
 
       //Used 2 if-else if statement to increase readability.
       if (typeof message == 'string' && (response.text).match(new RegExp('.*\\b' + message + '\\b.*', 'i'))) {
@@ -72,6 +69,8 @@ class SlackWebSocket {
 
   /**
    * Sends a message to specific channel.
+   *
+   * @param {Object} opts
    *
    * @returns {Promise}
    */
@@ -117,10 +116,34 @@ class SlackWebSocket {
     this.websocket = new WebSocket(this.url);
 
     return new Promise((resolve, reject) => {
-      this.websocket.on('open', (response) => {
-        resolve();
-      });
-    });
+        this.websocket.on('open', (response) => {
+          console.log('open', response)
+          resolve();
+        });
+
+        this.websocket.on('close', (response) => {
+          console.log('close', response)
+        });
+
+        this.websocket.on('error', (response) => {
+          console.log('error', response)
+        });
+
+        this.websocket.on('connection', (response) => {
+          console.log('connection', response)
+        });
+
+        this.websocket.on('disconnect', (response) => {
+          console.log('disconnect', response)
+        });
+      })
+      .then(() => {
+        debug('Established connection');
+
+        this.listenAllEvents_();
+
+        return Promise.resolve(this);
+      })
   }
 
 
@@ -151,19 +174,22 @@ class SlackWebSocket {
   /**
    * Starts a conversation, if not-exist.
    *
+   * @param {String} channel - Channel name.
+   * @param {String=} user - User id.
+   *
    * @returns {Promise}
    */
-  startConversation(user, channel) {
+  startConversation(channel, user) {
     const conversationExist = _.findIndex(this.conversations, (item) => {
-      return item.user == user && item.channel == channel;
+      return item.user == (user || null) && item.channel == channel;
     });
 
     if (conversationExist != -1) return Promise.reject(new Error('Conversation exist'));
 
     this.conversations.push({
-      user: user,
+      user: user || null,
       channel: channel,
-      conversation: new Conversation(this.websocket, user, channel)
+      conversation: new Conversation(this.websocket, channel, user)
     });
 
     return Promise.resolve(_.last(this.conversations).conversation);
@@ -183,7 +209,7 @@ class SlackWebSocket {
 
         const channel = response.channel.id;
 
-        return this.startConversation(user, channel);
+        return this.startConversation(channel, user);
       });
   }
 }

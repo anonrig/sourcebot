@@ -10,10 +10,12 @@ class SlackCore {
    * @constructor
    */
   constructor(opts) {
+    if (!opts)
+      throw new Error('Missing opts.');
     if (opts.debug) process.env.DEBUG = 'slack:*';
 
     debug('Initialize');
-    
+
     this.request = new Request(opts && opts.token);
     this.token = opts && opts.token;
   }
@@ -41,8 +43,8 @@ class SlackCore {
           throw new Error(response.error.message)
         }
 
-        return new SlackWebSocket(response.url, that.request);
-      })
+        return (new SlackWebSocket(response.url, that.request)).connect();
+      });
   }
 
   /**

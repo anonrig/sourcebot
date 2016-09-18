@@ -7,6 +7,7 @@ SourceBot
 [![David](https://img.shields.io/david/sourcebot/sourcebot.svg)](https://david-dm.org/sourcebot/sourcebot)
 [![npm](https://img.shields.io/npm/l/sourcebot.svg)](https://spdx.org/licenses/MIT)
 [![Code Climate](https://codeclimate.com/github/sourcebot/sourcebot/badges/gpa.svg)](https://codeclimate.com/github/sourcebot/sourcebot)
+[![Coverage Status](https://coveralls.io/repos/github/sourcebot/sourcebot/badge.svg?branch=conversation-bug)](https://coveralls.io/github/sourcebot/sourcebot?branch=conversation-bug)
 
 
 SourceBot is a platform independent chat bot framework. It aims to connect Facebook Messenger, Slack and Skype with the same code.
@@ -66,7 +67,7 @@ SlackBot
       .listen(new RegExp('start convo', 'i'), (response) => {
 
         bot
-          .startConversation(response.user, response.channel)
+          .startConversation(response.channel, response.user)
           .then((conversation) => {
             return conversation
               .ask('How are you?')
@@ -157,7 +158,7 @@ SlackBot
       .listen(new RegExp('start convo', 'i'), (response) => {
 
         bot
-          .startConversation(response.user, response.channel)
+          .startConversation(response.channel, response.User)
           .then((conversation) => {
             return conversation
               .askSerial([
@@ -202,7 +203,7 @@ Methods
   * Listens for the message. The message can be an instance of RegExp or a plain String. Returns promise containing the response.
 * ```send(opts)```
   * Sends a message to specified channel, Takes ```opts``` object as a parameter containing text and channel fields. Returns empty promise.
-* ```startConversation(user, channel)```
+* ```startConversation(channelName, userId)```
   * Starts a conversation with the specified user in a specified channel. Takes user's slack id and the id of the channel. Returns promise containing a ```conversation``` object.
 * ```startPrivateConversation(user)```
   * Starts private conversation between a user. Returns promise containing a ```conversation``` object.
