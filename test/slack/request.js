@@ -12,14 +12,18 @@ const Request = require('../../src/slack/request');
 
 describe('Request', () => {
   beforeEach(() => {
-    this.request = new Request('test-token');
+    this.request = new Request('EXAMPLE_TOKEN');
     this.opts = {
       uri: 'https://github.com/sourcebot/sourcebot'
     };
   });
 
   it('should accept api token', () => {
-    this.request.token.should.equal('test-token');
+    this.request.token.should.equal('EXAMPLE_TOKEN');
+  });
+
+  it('should have a private request function', () => {
+    this.request.request_.should.exist;
   });
 
   it('should throw error on missing uri', () => {

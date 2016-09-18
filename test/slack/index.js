@@ -9,8 +9,13 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 
 const SlackCore = require('../../src/slack/index');
+const Request = require('../../src/slack/request');
 
 describe('Core', () => {
+  beforeEach(() => {
+    this.request = new Request('EXAMPLE_TOKEN');
+  });
+
   it('should enable debug mode', () => {
     let core = new SlackCore({debug: true});
 
@@ -30,5 +35,13 @@ describe('Core', () => {
     let core = new SlackCore({});
 
     core.connect().should.be.rejected;
+  });
+
+  it('should return a valid request class', () => {
+    let instance = new SlackCore({
+      token: 'EXAMPLE_TOKEN'
+    });
+
+    return instance.requestSlack().should.deep.equal(this.request);
   });
 });

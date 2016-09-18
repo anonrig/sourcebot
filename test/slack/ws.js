@@ -16,7 +16,8 @@ const Request = require('../../src/slack/request');
 
 describe('Websocket Properties', () => {
   beforeEach(() => {
-    this.request = new Request('https://slack.com/api/');
+    this.request = new Request('EXAMPLE_TOKEN');
+    this.instance = new WSInstance('ws://echo.websocket.org/', this.request);
   });
 
   it('should throw error on missing url or request instance', () => {
@@ -30,18 +31,12 @@ describe('Websocket Properties', () => {
 
     instance.should.be.rejected;
   });
-});
-
-describe('Websocket Connection', () => {
-  beforeEach(() => {
-    this.request = new Request('https://slack.com/api/');
-    this.instance = new WSInstance('ws://echo.websocket.org/', this.request);
-  });
 
   it('should have a valid ws instance', () => {
     return this.instance
       .connect()
       .then((bot) => {
+        bot.should.be.an.instanceof(WSInstance);
         bot.websocket.should.exist;
       });
   });
