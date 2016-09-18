@@ -43,8 +43,8 @@ class SlackCore {
           throw new Error(response.error.message)
         }
 
-        return new SlackWebSocket(response.url, that.request);
-      })
+        return (new SlackWebSocket(response.url, that.request)).connect();
+      });
   }
 
   /**

@@ -25,15 +25,6 @@ class SlackWebSocket {
     this.messageCount = 1;
     this.eventEmitter = new EventEmitter();
     this.conversations = [];
-
-    return this.connect()
-      .then(() => {
-        debug('Established connection');
-
-        this.listenAllEvents_();
-
-        return Promise.resolve(this);
-      });
   }
 
 
@@ -125,27 +116,34 @@ class SlackWebSocket {
     this.websocket = new WebSocket(this.url);
 
     return new Promise((resolve, reject) => {
-      this.websocket.on('open', (response) => {
-        console.log('open', response)
-        resolve();
-      });
+        this.websocket.on('open', (response) => {
+          console.log('open', response)
+          resolve();
+        });
 
-      this.websocket.on('close', (response) => {
-        console.log('close', response)
-      });
+        this.websocket.on('close', (response) => {
+          console.log('close', response)
+        });
 
-      this.websocket.on('error', (response) => {
-        console.log('error', response)
-      });
+        this.websocket.on('error', (response) => {
+          console.log('error', response)
+        });
 
-      this.websocket.on('connection', (response) => {
-        console.log('connection', response)
-      });
+        this.websocket.on('connection', (response) => {
+          console.log('connection', response)
+        });
 
-      this.websocket.on('disconnect', (response) => {
-        console.log('disconnect', response)
-      });
-    });
+        this.websocket.on('disconnect', (response) => {
+          console.log('disconnect', response)
+        });
+      })
+      .then(() => {
+        debug('Established connection');
+
+        this.listenAllEvents_();
+
+        return Promise.resolve(this);
+      })
   }
 
 
