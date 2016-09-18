@@ -13,6 +13,7 @@ const Promise = require('bluebird');
 const EventEmitter = require('events');
 const WSInstance = require('../../src/slack/ws');
 const Request = require('../../src/slack/request');
+const ws = require('ws');
 
 class MockWebSocket {
   constructor(url) {}
@@ -61,6 +62,15 @@ describe('Websocket Properties', () => {
       });
   });
 
+  it('should return websocket instance on getSocketInstance', () => {
+    return this.instance
+      .connect()
+      .then((bot) => {
+        bot.should.exist;
+        bot.getSocketInstance().should.be.an.instanceof(ws);
+      });
+  });
+
   it('should send a message and bump count', () => {
     let that = this;
 
@@ -100,5 +110,5 @@ describe('Websocket Properties', () => {
 
         bot.messageCount.should.not.equal(2);
       });
-  })
+  });
 });
