@@ -79,14 +79,10 @@ class SlackWebSocket {
 
     opts.id = this.messageCount;
     opts.type = 'message';
-    console.log('GIRDI BURAYA 1')
-
 
     return new Promise((resolve, reject) => {
       debug('Send message initialize');
-      console.log('GIRDI BURAYA 2')
       this.websocket.send(JSON.stringify(opts), (err) => {
-        console.log('GIRDI BURAYA 3')
         if (err) {
           debug('Send message failed due to', err.message);
           return reject(err);
