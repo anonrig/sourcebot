@@ -1,3 +1,5 @@
+'use strict';
+
 const Promise = require('bluebird');
 const EventEmitter = require('events');
 const debug = require('debug')('slack:conversation');
