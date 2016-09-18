@@ -79,4 +79,26 @@ describe('Websocket Properties', () => {
         bot.websocket.send.should.calledOnce;
       });
   });
+
+  it('should reject if an error occured while sending a message', () => {
+    let that = this;
+
+    return this.instance
+      .connect()
+      .then((bot) => {
+        that.websocket.send = (message, callback) => {
+          callback(new Error());
+        };
+
+        bot.websocket = that.websocket;
+        bot.messageCount.should.equal(1);
+
+        bot.send({
+          text: 'Hello world',
+          channel: 'TEST_CHANNEL'
+        }).should.be.rejected;
+
+        bot.messageCount.should.not.equal(2);
+      });
+  })
 });
