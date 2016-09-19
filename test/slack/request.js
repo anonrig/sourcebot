@@ -14,7 +14,7 @@ describe('Request', () => {
   beforeEach(() => {
     this.request = new Request('EXAMPLE_TOKEN');
     this.opts = {
-      uri: 'https://github.com/sourcebot/sourcebot'
+      uri: 'http://jsonplaceholder.typicode.com/posts'
     };
   });
 
@@ -31,7 +31,10 @@ describe('Request', () => {
   });
 
   it('should accept valid uri', () => {
-    this.request.request_(this.opts).should.be.resolved;
+    const instance = () => {
+      return this.request.request_(this.opts);
+    }
+    instance().should.be.resolved;
   });
 
   it('should merge optional parameters with existing ones', () => {
