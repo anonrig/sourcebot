@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] -
 
+## [0.4.0] - 2016-09-19
+### Added
+- Added tests for stability.
+- Added Travis CI for tests.
+- Added Coveralls.io integration for code coverage statistics.
+
+### Fixed
+- Fixed startConversation not replying to anybody except the first responder bug.
+- Fixed documentation.
+
+### Changed
+- Slack WebSocket now throws an error if keys/opts are invalid/missing.
+- Slack WebSocket constructor won't connect automatically unless you call ```connect()``` function.
+
+
 ## [0.3.0] - 2016-09-05
 ### Added
 - Added Slack's API interface to communicate with Slack.
@@ -32,7 +47,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Multiple listeners inconsistency solved.
 - Multiple typos.
 
-[Unreleased]: https://github.com/sourcebot/sourcebot/compare/0.3.0...HEAD
+[Unreleased]: https://github.com/sourcebot/sourcebot/compare/0.4.0...HEAD
+[0.4.0]: https://github.com/sourcebot/sourcebot/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/sourcebot/sourcebot/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/sourcebot/sourcebot/compare/0.1.2...0.2.0
 [0.1.2]: https://github.com/sourcebot/sourcebot/compare/0.1.1...0.1.2
