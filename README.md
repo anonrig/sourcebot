@@ -35,6 +35,8 @@ Examples
 
 ### Typical 'hello world':
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/sourcebot/sourcebot.svg)](https://greenkeeper.io/)
+
 ```javascript
 let SlackCore = require('sourcebot').Slack;
 let SlackBot = new SlackCore({
