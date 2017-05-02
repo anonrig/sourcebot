@@ -7,6 +7,7 @@ SourceBot
 [![Code Climate](https://codeclimate.com/github/sourcebot/sourcebot/badges/gpa.svg)](https://codeclimate.com/github/sourcebot/sourcebot)
 [![Build Status](https://travis-ci.org/sourcebot/sourcebot.svg?branch=master)](https://travis-ci.org/sourcebot/sourcebot)
 [![Coverage Status](https://coveralls.io/repos/github/sourcebot/sourcebot/badge.svg)](https://coveralls.io/github/sourcebot/sourcebot)
+[![Greenkeeper badge](https://badges.greenkeeper.io/sourcebot/sourcebot.svg)](https://greenkeeper.io/)
 
 
 SourceBot is a platform independent chat bot framework. It aims to connect Facebook Messenger, Slack and Skype with the same code.
@@ -34,8 +35,6 @@ Examples
 ==
 
 ### Typical 'hello world':
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/sourcebot/sourcebot.svg)](https://greenkeeper.io/)
 
 ```javascript
 let SlackCore = require('sourcebot').Slack;
